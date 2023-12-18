@@ -1,7 +1,9 @@
 package org.cys.iot.processor;
 
+import org.cys.iot.cosmos.SyncMain;
 import org.json.JSONObject;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.cys.iot.processor.TelemetryProcessor.*;
@@ -18,7 +20,10 @@ public class Main {
         getValues(body.getJSONArray("currentArmonics"), "CurrentHarmonics");
         activeEnergyValues(body.getJSONArray("activeEnergy"));
 
-        System.out.println(data);
+        data.put("id", LocalDateTime.now().toString());
+        data.put("partitionKey", LocalDateTime.now().toString());
+
+        SyncMain.publishDataToCosmos(data);
 
     }
 }

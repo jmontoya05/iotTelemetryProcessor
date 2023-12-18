@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class TelemetryProcessor {
 
-    static Map<String, Float> data;
+    public static Map<String, Object> data;
 
     static void getValues(JSONArray values, String fliedName) {
         data.put(fliedName + "1", convertFromInt16ToFloat32((int) values.get(0), (int) values.get(1)));
