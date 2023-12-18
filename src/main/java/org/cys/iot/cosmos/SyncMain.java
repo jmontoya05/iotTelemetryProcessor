@@ -13,6 +13,7 @@ import com.azure.cosmos.models.CosmosItemResponse;
 import com.azure.cosmos.models.PartitionKey;
 
 import java.util.Map;
+
 public class SyncMain {
     private final String HOST = System.getenv("HOST_COSMOS");
     private final String MASTER_KEY = System.getenv("MASTER_KEY_COSMOS");

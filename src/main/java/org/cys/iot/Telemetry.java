@@ -20,9 +20,10 @@ public class Telemetry {
             @HttpTrigger(name = "req", methods = {HttpMethod.GET, HttpMethod.POST}, authLevel = AuthorizationLevel.FUNCTION) HttpRequestMessage<Optional<String>> request,
             final ExecutionContext context) {
 
+        if (request.getBody().isPresent()) {
+            Main.run(new JSONObject(request.getBody().get()));
+        }
         context.getLogger().info("Request processed");
-
-        Main.run(new JSONObject(request.getBody().get()));
 
         return request.createResponseBuilder(HttpStatus.OK).body("Ok").build();
     }

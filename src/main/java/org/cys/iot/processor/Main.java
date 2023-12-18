@@ -5,23 +5,42 @@ import org.json.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
-import static org.cys.iot.processor.TelemetryProcessor.*;
+import static org.cys.iot.processor.TelemetryProcessor.activeEnergyValues;
+import static org.cys.iot.processor.TelemetryProcessor.data;
+import static org.cys.iot.processor.TelemetryProcessor.getValues;
 
 public class Main {
     public static void run(JSONObject body) {
 
         data = new HashMap<>();
-        getValues(body.getJSONArray("power"), "Power");
-        getValues(body.getJSONArray("powerFactor"), "PowerFactor");
-        getValues(body.getJSONArray("voltage"), "Voltage");
-        getValues(body.getJSONArray("voltageHarmonics"), "VoltageHarmonics");
-        getValues(body.getJSONArray("current"), "Current");
-        getValues(body.getJSONArray("currentArmonics"), "CurrentHarmonics");
-        activeEnergyValues(body.getJSONArray("activeEnergy"));
 
-        data.put("id", LocalDateTime.now().toString());
-        data.put("partitionKey", LocalDateTime.now().toString());
+        Map<String, String> fieldOperations = new HashMap<>();
+        fieldOperations.put("power", "Power");
+        fieldOperations.put("powerFactor", "PowerFactor");
+        fieldOperations.put("voltage", "Voltage");
+        fieldOperations.put("voltageHarmonics", "VoltageHarmonics");
+        fieldOperations.put("current", "Current");
+        fieldOperations.put("currentHarmonics", "CurrentHarmonics");
+        fieldOperations.put("activeEnergy", "ActiveEnergy");
+
+        fieldOperations.keySet().stream()
+                .filter(fieldName -> !body.isNull(fieldName))
+                .forEach(fieldName -> {
+                    if ("activeEnergy".equals(fieldName)) {
+                        activeEnergyValues(body.getJSONArray(fieldName));
+                    } else {
+                        getValues(body.getJSONArray(fieldName), fieldOperations.get(fieldName));
+                    }
+                });
+
+        String device = body.getString("device");
+        System.out.println(device);
+        String id = device + " - " + LocalDateTime.now();
+        data.put("device", device);
+        data.put("id", id);
+        data.put("partitionKey", id);
 
         SyncMain.publishDataToCosmos(data);
 
