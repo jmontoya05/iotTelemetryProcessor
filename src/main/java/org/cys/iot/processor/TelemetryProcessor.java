@@ -15,11 +15,11 @@ public class TelemetryProcessor {
         data.put(fliedName + "AVG", convertFromInt16ToFloat32((int) values.get(6), (int) values.get(7)));
     }
 
-    static void activeEnergyValues(JSONArray values) {
-        data.put("ActiveEnergy1", (float) ((int) values.get(1)));
-        data.put("ActiveEnergy2", (float) ((int) values.get(3)));
-        data.put("ActiveEnergy3", (float) ((int) values.get(5)));
-        data.put("ActiveEnergyAVG", (float) ((int) values.get(7)));
+    static void activeEnergyValues(JSONArray values, String fliedName) {
+        data.put(fliedName + "1", (float) ((int) values.get(1)));
+        data.put(fliedName + "2", (float) ((int) values.get(3)));
+        data.put(fliedName + "3", (float) ((int) values.get(5)));
+        data.put(fliedName + "AVG", (float) ((int) values.get(7)));
     }
 
     static float convertFromInt16ToFloat32(int value1, int value2) {
