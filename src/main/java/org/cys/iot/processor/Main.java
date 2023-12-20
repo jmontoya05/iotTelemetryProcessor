@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+
 import static org.cys.iot.processor.TelemetryProcessor.activeEnergyValues;
-import static org.cys.iot.processor.TelemetryProcessor.data;
 import static org.cys.iot.processor.TelemetryProcessor.getValues;
 
 public class Main {
     public static void run(JSONObject body) {
 
-        data = new TreeMap<>();
+        Map<String, Object> data = new TreeMap<>();
 
         Map<String, String> fieldOperations = getStringStringMap();
 
@@ -25,7 +25,7 @@ public class Main {
                 .filter(fieldName -> !body.isNull(fieldName))
                 .forEach(fieldName -> {
                     if ("activeEnergy".equals(fieldName)) {
-                        activeEnergyValues(body.getJSONArray(fieldName), "activeEnergy");
+                        data.putAll(activeEnergyValues(body.getJSONArray(fieldName), "activeEnergy"));
                     } else if ("temperature".equals(fieldName)) {
                         data.put("temperature", body.getFloat("temperature"));
                     } else if ("humidity".equals(fieldName)) {
@@ -33,7 +33,7 @@ public class Main {
                     } else if ("pressure".equals(fieldName)) {
                         data.put("pressure", body.getFloat("pressure"));
                     } else {
-                            getValues(body.getJSONArray(fieldName), fieldOperations.get(fieldName));
+                        data.putAll(getValues(body.getJSONArray(fieldName), fieldOperations.get(fieldName)));
                     }
                 });
 
